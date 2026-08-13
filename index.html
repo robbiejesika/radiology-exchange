@@ -534,37 +534,43 @@
         <label>Email (optional)
           <input name="email" type="email" placeholder="you@imagingcenter.com" />
         </label>
-        <div class="form-note">Prototype behavior: this form copies the response to the visitor’s clipboard. In <code>index.html</code>, you can optionally set a feedback email address or replace this with your preferred Formspree / Google Form / HubSpot endpoint before distributing the page.</div>
-        <button type="submit" class="button primary">Prepare feedback</button>
+        <div class="form-note">Your feedback will be emailed to the Radiology Exchange team. Please do not include patient names, images, medical record numbers, or other protected health information.</div>
+        <button type="submit" class="button primary" id="submitFeedback">Send feedback</button>
       </form>
     </div>
   </div>
   <div class="toast" id="toast">Feedback copied to clipboard.</div>
 
   <script>
-    // OPTIONAL: Put your email address between the quotes to open an email draft after form submission.
-    // Example: const FEEDBACK_EMAIL = "you@yourdomain.com";
-    const FEEDBACK_EMAIL = "tannerjesse@hotmail.com";
+    // This uses FormSubmit as a lightweight form backend for this static GitHub Pages site.
+    // Submissions are forwarded to the email address below.
+    // IMPORTANT: The first submission will cause FormSubmit to send an activation email
+    // to this address. Click that activation link once to begin receiving submissions.
+    const FORM_ENDPOINT = 'https://formsubmit.co/ajax/tannerjesse@hotmail.com';
 
     const modal = document.getElementById('feedbackModal');
     const triggers = document.querySelectorAll('.feedback-trigger');
     const closeModal = document.getElementById('closeModal');
     const form = document.getElementById('feedbackForm');
     const toast = document.getElementById('toast');
+    const submitButton = document.getElementById('submitFeedback');
 
     function openFeedback() {
       modal.classList.add('open');
       document.body.style.overflow = 'hidden';
       setTimeout(() => modal.querySelector('select').focus(), 80);
     }
+
     function closeFeedback() {
       modal.classList.remove('open');
       document.body.style.overflow = '';
     }
+
     triggers.forEach(el => el.addEventListener('click', (e) => {
       if (el.tagName === 'A') e.preventDefault();
       openFeedback();
     }));
+
     closeModal.addEventListener('click', closeFeedback);
     modal.addEventListener('click', e => { if (e.target === modal) closeFeedback(); });
     document.addEventListener('keydown', e => { if (e.key === 'Escape') closeFeedback(); });
@@ -572,42 +578,52 @@
     function showToast(message) {
       toast.textContent = message;
       toast.classList.add('show');
-      setTimeout(() => toast.classList.remove('show'), 2800);
+      setTimeout(() => toast.classList.remove('show'), 3200);
     }
 
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
+
       const data = new FormData(form);
-      const response = [
-        'RADIOLOGY EXCHANGE CONCEPT FEEDBACK',
-        '',
-        'Role: ' + data.get('role'),
-        'Appeal vs traditional teleradiology: ' + data.get('appeal'),
-        '',
-        'Reaction / concern:',
-        data.get('reaction'),
-        '',
-        'Must-have capabilities:',
-        data.get('mustHave') || '(not provided)',
-        '',
-        'Email: ' + (data.get('email') || '(not provided)')
-      ].join('\n');
+      const payload = {
+        _subject: 'New Radiology Exchange concept feedback',
+        _template: 'table',
+        role: data.get('role'),
+        'Appeal vs traditional teleradiology': data.get('appeal'),
+        'Most compelling or concerning': data.get('reaction'),
+        'Must-have capabilities': data.get('mustHave') || '(not provided)'
+      };
+
+      const visitorEmail = data.get('email');
+      if (visitorEmail) payload.email = visitorEmail;
+
+      const originalText = submitButton.textContent;
+      submitButton.disabled = true;
+      submitButton.textContent = 'Sending…';
 
       try {
-        await navigator.clipboard.writeText(response);
-        showToast('Feedback copied to clipboard.');
-      } catch (err) {
-        showToast('Feedback prepared.');
-      }
+        const response = await fetch(FORM_ENDPOINT, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+          },
+          body: JSON.stringify(payload)
+        });
 
-      if (FEEDBACK_EMAIL) {
-        const subject = encodeURIComponent('Radiology Exchange concept feedback');
-        const body = encodeURIComponent(response);
-        window.location.href = `mailto:${FEEDBACK_EMAIL}?subject=${subject}&body=${body}`;
-      } else {
-        setTimeout(() => {
-          alert('Thanks. Your feedback has been copied to your clipboard. Before sharing this site broadly, add your email to FEEDBACK_EMAIL in index.html or connect the form to your preferred form service.');
-        }, 150);
+        if (!response.ok) {
+          throw new Error('Form submission failed');
+        }
+
+        form.reset();
+        closeFeedback();
+        showToast('Thank you. Your feedback has been sent.');
+      } catch (error) {
+        console.error(error);
+        showToast('We could not send your feedback. Please try again.');
+      } finally {
+        submitButton.disabled = false;
+        submitButton.textContent = originalText;
       }
     });
   </script>
