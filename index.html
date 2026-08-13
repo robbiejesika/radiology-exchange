@@ -1,0 +1,615 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="Radiology Exchange is exploring a new model for independent imaging centers: build your own virtual radiology group with direct relationships, credential-ready radiologists, and flexible backup capacity." />
+  <meta name="theme-color" content="#071923" />
+  <title>Radiology Exchange | Build Your Own Virtual Radiology Group</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --ink: #071923;
+      --ink-2: #17313d;
+      --muted: #5b707b;
+      --line: #dce7eb;
+      --surface: #f5f9fa;
+      --surface-2: #edf5f6;
+      --white: #ffffff;
+      --blue: #1676aa;
+      --blue-dark: #0c5b86;
+      --teal: #1ea99a;
+      --teal-soft: #dff6f1;
+      --navy: #071923;
+      --shadow: 0 26px 70px rgba(7, 25, 35, .13);
+      --radius: 24px;
+      --max: 1180px;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      font-family: "DM Sans", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: var(--ink);
+      background: var(--white);
+      line-height: 1.55;
+      -webkit-font-smoothing: antialiased;
+    }
+    img { display: block; width: 100%; }
+    a { color: inherit; text-decoration: none; }
+    button, input, textarea, select { font: inherit; }
+
+    .container { width: min(calc(100% - 40px), var(--max)); margin: 0 auto; }
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 12px;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      font-weight: 700;
+      color: var(--blue-dark);
+      margin-bottom: 18px;
+    }
+    .eyebrow::before {
+      content: "";
+      width: 24px;
+      height: 2px;
+      background: var(--teal);
+      border-radius: 2px;
+    }
+
+    .nav-wrap {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: rgba(255,255,255,.92);
+      border-bottom: 1px solid rgba(220,231,235,.85);
+      backdrop-filter: blur(18px);
+    }
+    nav {
+      min-height: 72px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+    }
+    .brand { display: flex; align-items: center; gap: 11px; font-weight: 700; letter-spacing: -.02em; }
+    .brand-mark {
+      width: 34px;
+      height: 34px;
+      display: grid;
+      place-items: center;
+      border-radius: 10px;
+      background: var(--navy);
+      color: white;
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,.1);
+    }
+    .brand-mark svg { width: 20px; height: 20px; }
+    .nav-links { display: flex; align-items: center; gap: 28px; color: #37515d; font-size: 14px; font-weight: 600; }
+    .nav-links a:hover { color: var(--ink); }
+
+    .button {
+      border: 0;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 9px;
+      min-height: 48px;
+      padding: 0 20px;
+      border-radius: 12px;
+      font-weight: 700;
+      font-size: 14px;
+      transition: .2s ease;
+    }
+    .button.primary { background: var(--ink); color: white; box-shadow: 0 10px 25px rgba(7,25,35,.15); }
+    .button.primary:hover { transform: translateY(-1px); background: #0d2c39; }
+    .button.secondary { background: white; color: var(--ink); border: 1px solid var(--line); }
+    .button.secondary:hover { border-color: #adc3cc; background: #fbfdfd; }
+    .button.light { background: white; color: var(--ink); }
+
+    .hero {
+      padding: 90px 0 76px;
+      overflow: hidden;
+      background:
+        radial-gradient(circle at 84% 12%, rgba(30,169,154,.10), transparent 28%),
+        radial-gradient(circle at 5% 35%, rgba(22,118,170,.08), transparent 28%),
+        linear-gradient(#ffffff, #fbfdfd);
+    }
+    .hero-grid { display: grid; grid-template-columns: 1.02fr .98fr; gap: 68px; align-items: center; }
+    h1, h2, h3 { font-family: "Manrope", "DM Sans", sans-serif; margin: 0; letter-spacing: -.045em; }
+    h1 { font-size: clamp(48px, 6vw, 76px); line-height: 1.02; max-width: 780px; }
+    .hero-copy > p { margin: 24px 0 30px; max-width: 650px; color: var(--muted); font-size: 19px; line-height: 1.6; }
+    .hero-actions { display: flex; flex-wrap: wrap; gap: 12px; }
+    .hero-proof { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-top: 42px; }
+    .proof-item { padding: 14px 0; border-top: 1px solid var(--line); color: #44606c; font-size: 13px; font-weight: 600; }
+    .proof-item strong { display: block; color: var(--ink); font-size: 14px; margin-bottom: 2px; }
+
+    .hero-visual { position: relative; min-height: 570px; }
+    .hero-photo {
+      position: absolute;
+      inset: 0 0 0 38px;
+      border-radius: 30px;
+      overflow: hidden;
+      box-shadow: var(--shadow);
+      background: #dbe8eb;
+    }
+    .hero-photo img { width: 100%; height: 100%; object-fit: cover; object-position: center; filter: saturate(.82) contrast(1.02); }
+    .hero-photo::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, transparent 55%, rgba(7,25,35,.42));
+      pointer-events: none;
+    }
+    .availability-card {
+      position: absolute;
+      left: 0;
+      bottom: 48px;
+      width: 310px;
+      background: rgba(255,255,255,.96);
+      border: 1px solid rgba(255,255,255,.55);
+      border-radius: 18px;
+      padding: 18px;
+      box-shadow: 0 24px 60px rgba(7,25,35,.22);
+      backdrop-filter: blur(12px);
+    }
+    .availability-card .label { display: flex; align-items: center; justify-content: space-between; font-size: 12px; font-weight: 700; color: #617681; text-transform: uppercase; letter-spacing: .08em; }
+    .live-dot { display: inline-flex; align-items: center; gap: 6px; color: #168c73; }
+    .live-dot::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: #1fc09c; box-shadow: 0 0 0 4px rgba(31,192,156,.13); }
+    .availability-card h4 { margin: 9px 0 4px; font-family: "Manrope"; font-size: 22px; letter-spacing: -.03em; }
+    .availability-card p { margin: 0; color: var(--muted); font-size: 13px; }
+    .doctor-row { display: flex; gap: 8px; margin-top: 14px; }
+    .doctor-pill { flex: 1; border-radius: 10px; background: var(--surface); padding: 10px 9px; font-size: 11px; color: #4a6570; }
+    .doctor-pill strong { display: block; color: var(--ink); font-size: 12px; }
+
+    section { padding: 94px 0; }
+    .section-head { max-width: 760px; margin-bottom: 48px; }
+    h2 { font-size: clamp(36px, 4.4vw, 54px); line-height: 1.08; }
+    .section-head p { color: var(--muted); font-size: 18px; margin: 20px 0 0; }
+
+    .choice { background: var(--surface); }
+    .choice-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+    .choice-card { border-radius: var(--radius); padding: 34px; border: 1px solid var(--line); background: white; }
+    .choice-card.legacy { background: #f9fbfb; }
+    .choice-card.future { background: var(--ink); border-color: var(--ink); color: white; box-shadow: 0 25px 60px rgba(7,25,35,.14); }
+    .choice-tag { display: inline-flex; padding: 7px 10px; border-radius: 999px; background: #e8eff1; color: #5e727c; font-size: 11px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; }
+    .future .choice-tag { background: rgba(30,169,154,.16); color: #9ce7dc; }
+    .choice-card h3 { font-size: 28px; margin: 18px 0 10px; }
+    .choice-card > p { color: var(--muted); margin: 0 0 24px; }
+    .future > p { color: #b9c9cf; }
+    .compare-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 0; }
+    .compare-list li { display: grid; grid-template-columns: 22px 1fr; gap: 12px; padding: 15px 0; border-top: 1px solid var(--line); color: #405b67; }
+    .future .compare-list li { border-color: rgba(255,255,255,.12); color: #d6e2e6; }
+    .compare-list .icon { width: 20px; height: 20px; border-radius: 50%; display: grid; place-items: center; background: #edf1f2; color: #81939b; font-size: 12px; margin-top: 1px; }
+    .future .compare-list .icon { background: rgba(30,169,154,.16); color: #69d6c8; }
+    .compare-list strong { color: var(--ink); }
+    .future .compare-list strong { color: white; }
+
+    .how-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px; }
+    .step { padding: 26px; border: 1px solid var(--line); border-radius: 18px; min-height: 230px; }
+    .step-number { width: 34px; height: 34px; display: grid; place-items: center; border-radius: 10px; background: var(--teal-soft); color: #0b7b6d; font-weight: 700; margin-bottom: 42px; }
+    .step h3 { font-size: 20px; margin-bottom: 10px; }
+    .step p { margin: 0; color: var(--muted); font-size: 14px; }
+
+    .eligibility { background: var(--ink); color: white; overflow: hidden; position: relative; }
+    .eligibility::before { content:""; position:absolute; width:500px; height:500px; border-radius:50%; background:rgba(30,169,154,.10); right:-120px; top:-180px; filter: blur(2px); }
+    .eligibility-grid { display: grid; grid-template-columns: .9fr 1.1fr; gap: 70px; align-items: center; position: relative; }
+    .eligibility p { color: #aec1c8; font-size: 18px; }
+    .eligibility .eyebrow { color: #8cded2; }
+    .eligibility-panel { padding: 26px; border: 1px solid rgba(255,255,255,.12); background: rgba(255,255,255,.04); border-radius: 24px; box-shadow: inset 0 1px rgba(255,255,255,.04); }
+    .panel-top { display: flex; align-items: center; justify-content: space-between; gap: 14px; padding-bottom: 18px; border-bottom: 1px solid rgba(255,255,255,.1); }
+    .doc-id { display:flex; align-items:center; gap:12px; }
+    .avatar { width: 42px; height: 42px; border-radius: 12px; display:grid; place-items:center; background: linear-gradient(135deg, #295466, #1b8f85); font-weight:700; }
+    .doc-id strong { display:block; }
+    .doc-id span { color:#91a9b2; font-size:12px; }
+    .eligible { padding: 7px 10px; background: rgba(30,169,154,.14); color:#89e1d4; border-radius:999px; font-size:11px; font-weight:700; }
+    .checks { display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-top:18px; }
+    .check { padding:14px; border-radius:12px; background:rgba(255,255,255,.045); display:flex; align-items:flex-start; justify-content:space-between; gap:10px; }
+    .check span { font-size:12px; color:#91a9b2; }
+    .check strong { display:block; color:white; font-size:13px; margin-top:2px; }
+    .check-mark { color:#62d4c4; font-weight:700; }
+    .route-card { margin-top:12px; padding:15px; border-radius:12px; background:#f8fcfc; color:var(--ink); display:flex; justify-content:space-between; align-items:center; }
+    .route-card small { display:block; color:#6a7e88; }
+    .route-card strong { font-size:14px; }
+    .route-button { padding:8px 10px; border-radius:9px; background:var(--ink); color:#fff; font-size:11px; font-weight:700; }
+
+    .use-cases { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+    .use-card { background: var(--surface); border-radius: 18px; padding: 24px; min-height: 170px; }
+    .use-icon { width: 38px; height: 38px; border-radius: 11px; background: white; display: grid; place-items: center; color: var(--blue-dark); border: 1px solid var(--line); margin-bottom: 24px; }
+    .use-card h3 { font-size: 18px; margin-bottom: 8px; }
+    .use-card p { margin: 0; color: var(--muted); font-size: 14px; }
+
+    .relationship { padding-top: 35px; }
+    .relationship-card { display: grid; grid-template-columns: 1fr 1fr; gap: 0; background: #f2f7f8; border-radius: 28px; overflow: hidden; border: 1px solid var(--line); }
+    .relationship-copy { padding: 64px; display: flex; flex-direction: column; justify-content: center; }
+    .relationship-copy h2 { font-size: clamp(34px, 4vw, 50px); }
+    .relationship-copy p { color: var(--muted); font-size: 17px; margin: 20px 0 0; }
+    .relationship-photo { min-height: 470px; position: relative; overflow: hidden; background:#d8e4e8; }
+    .relationship-photo img { height: 100%; object-fit: cover; filter: saturate(.82); }
+    .video-chip { position:absolute; left:22px; bottom:22px; background:rgba(7,25,35,.9); color:white; border-radius:13px; padding:13px 15px; backdrop-filter:blur(8px); font-size:12px; }
+    .video-chip strong { display:block; font-size:13px; }
+
+    .not-model { background: #fbfdfd; }
+    .not-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 26px; }
+    .plain-card { border-top: 1px solid var(--line); padding-top: 24px; }
+    .plain-card h3 { font-size: 22px; margin-bottom: 12px; }
+    .plain-card p { margin:0; color: var(--muted); }
+
+    .feedback { background: linear-gradient(135deg, #0b2633, #071923 60%, #0b3a3b); color: white; text-align: center; }
+    .feedback .section-head { margin-left:auto; margin-right:auto; }
+    .feedback .section-head p { color: #b7c8ce; }
+    .feedback-actions { display:flex; justify-content:center; flex-wrap:wrap; gap:12px; margin-top: 28px; }
+    .micro { color:#8da3ac; font-size:12px; margin-top:18px; }
+
+    footer { padding: 34px 0; border-top: 1px solid var(--line); color: #71858e; font-size: 12px; }
+    .footer-grid { display:flex; justify-content:space-between; gap:24px; align-items:flex-start; }
+    .footer-grid p { max-width: 760px; margin: 0; }
+    .footer-links { white-space: nowrap; }
+
+    .modal { position:fixed; inset:0; z-index:100; display:none; align-items:center; justify-content:center; padding:20px; background:rgba(4,17,24,.64); backdrop-filter:blur(8px); }
+    .modal.open { display:flex; }
+    .modal-card { width:min(100%, 680px); max-height:90vh; overflow:auto; background:white; border-radius:22px; padding:30px; box-shadow:var(--shadow); }
+    .modal-top { display:flex; justify-content:space-between; align-items:flex-start; gap:16px; }
+    .modal-top h3 { font-size:28px; }
+    .modal-top p { color:var(--muted); margin:8px 0 0; }
+    .close { border:0; background:var(--surface); width:36px; height:36px; border-radius:10px; cursor:pointer; font-size:19px; }
+    .form-grid { display:grid; gap:16px; margin-top:24px; }
+    label { display:grid; gap:7px; color:#334f5c; font-size:13px; font-weight:700; }
+    input, select, textarea { width:100%; border:1px solid #cfdde2; border-radius:11px; padding:12px 13px; color:var(--ink); background:white; outline:none; }
+    input:focus, select:focus, textarea:focus { border-color:#6eaec9; box-shadow:0 0 0 3px rgba(22,118,170,.09); }
+    textarea { min-height:110px; resize:vertical; }
+    .form-note { padding:12px 13px; border-radius:10px; background:#f3f8f9; color:#607781; font-size:12px; }
+    .toast { position:fixed; left:50%; bottom:25px; transform:translateX(-50%) translateY(20px); background:var(--ink); color:white; padding:12px 15px; border-radius:10px; font-size:13px; opacity:0; pointer-events:none; transition:.2s ease; z-index:120; box-shadow:0 12px 30px rgba(7,25,35,.25); }
+    .toast.show { opacity:1; transform:translateX(-50%) translateY(0); }
+
+    @media (max-width: 980px) {
+      .nav-links a:not(.button) { display:none; }
+      .hero-grid, .eligibility-grid, .relationship-card { grid-template-columns:1fr; }
+      .hero { padding-top:64px; }
+      .hero-visual { min-height:520px; margin-top:10px; }
+      .hero-photo { left:0; }
+      .availability-card { left:18px; }
+      .how-grid, .use-cases { grid-template-columns:1fr 1fr; }
+      .relationship-photo { min-height:430px; grid-row:1; }
+      .relationship-copy { padding:45px; }
+    }
+    @media (max-width: 680px) {
+      .container { width:min(calc(100% - 28px), var(--max)); }
+      nav { min-height:64px; }
+      .nav-links .button { min-height:40px; padding:0 13px; }
+      .hero { padding:52px 0 58px; }
+      h1 { font-size:45px; }
+      .hero-copy > p { font-size:17px; }
+      .hero-proof { grid-template-columns:1fr 1fr; }
+      .hero-visual { min-height:440px; }
+      .availability-card { width:calc(100% - 36px); bottom:18px; }
+      section { padding:68px 0; }
+      .choice-grid, .how-grid, .use-cases, .not-grid { grid-template-columns:1fr; }
+      .choice-card { padding:26px; }
+      .checks { grid-template-columns:1fr; }
+      .relationship-copy { padding:34px 26px; }
+      .relationship-photo { min-height:360px; }
+      .footer-grid { flex-direction:column; }
+      .modal-card { padding:23px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="nav-wrap">
+    <div class="container">
+      <nav>
+        <a class="brand" href="#top" aria-label="Radiology Exchange home">
+          <span class="brand-mark" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none"><path d="M4 7.5h7.5V4L20 12l-8.5 8v-3.5H4v-9Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+          </span>
+          <span>Radiology Exchange</span>
+        </a>
+        <div class="nav-links">
+          <a href="#model">The model</a>
+          <a href="#how">How it works</a>
+          <a href="#feedback" class="button primary feedback-trigger">Share feedback</a>
+        </div>
+      </nav>
+    </div>
+  </div>
+
+  <main id="top">
+    <header class="hero">
+      <div class="container hero-grid">
+        <div class="hero-copy">
+          <div class="eyebrow">A new model for independent imaging centers</div>
+          <h1>Build your own virtual radiology group.</h1>
+          <p>Choose the radiologists you trust. Keep direct professional relationships. Add subspecialty and backup capacity when you need it—without outsourcing your entire reading operation.</p>
+          <div class="hero-actions">
+            <a href="#model" class="button primary">See the model <span aria-hidden="true">→</span></a>
+            <button class="button secondary feedback-trigger">Tell us what you think</button>
+          </div>
+          <div class="hero-proof" aria-label="Key concept benefits">
+            <div class="proof-item"><strong>Your radiologists</strong>Build a preferred network</div>
+            <div class="proof-item"><strong>Your economics</strong>Define professional fees</div>
+            <div class="proof-item"><strong>Flexible capacity</strong>Add backup as needed</div>
+            <div class="proof-item"><strong>Less friction</strong>Credential-ready access</div>
+          </div>
+        </div>
+
+        <div class="hero-visual" aria-label="Radiologist reviewing medical imaging remotely">
+          <div class="hero-photo">
+            <img src="https://images.pexels.com/photos/6235053/pexels-photo-6235053.jpeg?auto=compress&cs=tinysrgb&w=1600" alt="Radiology professional reviewing medical images on multiple monitors" />
+          </div>
+          <div class="availability-card">
+            <div class="label"><span>Center-approved network</span><span class="live-dot">Live</span></div>
+            <h4>3 eligible radiologists available</h4>
+            <p>Example: MRI • MSK • turnaround target &lt; 60 min</p>
+            <div class="doctor-row">
+              <div class="doctor-pill"><strong>MSK</strong>Ready now</div>
+              <div class="doctor-pill"><strong>Neuro</strong>12 min</div>
+              <div class="doctor-pill"><strong>Body</strong>24 min</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <section class="choice" id="model">
+      <div class="container">
+        <div class="section-head">
+          <div class="eyebrow">A different choice</div>
+          <h2>The answer shouldn’t have to be “hire another radiologist” or “give up control.”</h2>
+          <p>Traditional teleradiology can solve coverage—but often by moving the relationship, network, and operating model outside your center. We’re exploring a more flexible middle path.</p>
+        </div>
+        <div class="choice-grid">
+          <article class="choice-card legacy">
+            <span class="choice-tag">Traditional teleradiology</span>
+            <h3>Outsource the reading function</h3>
+            <p>A single outside organization provides coverage through its own network and operating model.</p>
+            <ul class="compare-list">
+              <li><span class="icon">—</span><span><strong>Vendor-managed network.</strong> The provider determines which radiologists are available to you.</span></li>
+              <li><span class="icon">—</span><span><strong>Limited relationship continuity.</strong> The physician reading today may not be someone your team knows.</span></li>
+              <li><span class="icon">—</span><span><strong>Coverage comes as a package.</strong> Contracting and pricing are structured around the vendor’s model.</span></li>
+              <li><span class="icon">—</span><span><strong>Control is traded for convenience.</strong> That may be exactly right for some centers—but not all.</span></li>
+            </ul>
+          </article>
+
+          <article class="choice-card future">
+            <span class="choice-tag">Radiology Exchange concept</span>
+            <h3>Build your own virtual group</h3>
+            <p>Assemble a center-approved network and use technology to make that network easier to operate.</p>
+            <ul class="compare-list">
+              <li><span class="icon">✓</span><span><strong>Choose your radiologists.</strong> Build preferred relationships around specialty, availability, performance, and fit.</span></li>
+              <li><span class="icon">✓</span><span><strong>Keep direct relationships.</strong> Your center knows who is reading and can strengthen continuity over time.</span></li>
+              <li><span class="icon">✓</span><span><strong>Define your economics.</strong> Professional arrangements stay between the imaging center and radiologist.</span></li>
+              <li><span class="icon">✓</span><span><strong>Add automatic backup.</strong> If a preferred reader is unavailable, a study can expand to other center-approved radiologists.</span></li>
+            </ul>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="how">
+      <div class="container">
+        <div class="section-head">
+          <div class="eyebrow">How the concept works</div>
+          <h2>Your network. Made usable.</h2>
+          <p>The platform is designed to reduce the transaction costs that make independent radiologist capacity difficult to access today.</p>
+        </div>
+        <div class="how-grid">
+          <article class="step"><div class="step-number">01</div><h3>Build your network</h3><p>Find radiologists by state authorization, board certification, fellowship training, subspecialty expertise, objective turnaround metrics, and availability.</p></article>
+          <article class="step"><div class="step-number">02</div><h3>Approve once</h3><p>Review a continuously maintained Credential Passport against your center’s own requirements and approve physicians for your network.</p></article>
+          <article class="step"><div class="step-number">03</div><h3>Route flexibly</h3><p>Send studies to a preferred reader—or allow them to expand to other approved radiologists when time or capacity requires it.</p></article>
+          <article class="step"><div class="step-number">04</div><h3>Build continuity</h3><p>Learn who performs well for your center and build a virtual group that becomes more dependable over time.</p></article>
+        </div>
+      </div>
+    </section>
+
+    <section class="eligibility">
+      <div class="container eligibility-grid">
+        <div>
+          <div class="eyebrow">Beyond a credential file</div>
+          <h2>Know who is actually eligible to read for your center.</h2>
+          <p>The idea is to move beyond simply storing documents. The platform would compare verified physician information against each center’s predetermined requirements so the center can quickly identify radiologists who appear ready for its approval.</p>
+          <p style="font-size:14px;color:#829da7;margin-top:22px;">Final credentialing decisions remain with the imaging center. This is a concept-stage illustration, not a representation of currently available functionality.</p>
+        </div>
+        <div class="eligibility-panel" aria-label="Illustrative radiologist eligibility panel">
+          <div class="panel-top">
+            <div class="doc-id"><div class="avatar">AR</div><div><strong>Alex Rivera, MD</strong><span>Diagnostic Radiology • MSK Fellowship</span></div></div>
+            <span class="eligible">Center eligible</span>
+          </div>
+          <div class="checks">
+            <div class="check"><div><span>State authorization</span><strong>Requirement met</strong></div><span class="check-mark">✓</span></div>
+            <div class="check"><div><span>Board certification</span><strong>Verified</strong></div><span class="check-mark">✓</span></div>
+            <div class="check"><div><span>Malpractice coverage</span><strong>Current</strong></div><span class="check-mark">✓</span></div>
+            <div class="check"><div><span>Workstation attestation</span><strong>Current</strong></div><span class="check-mark">✓</span></div>
+            <div class="check"><div><span>Subspecialty</span><strong>MSK / MRI</strong></div><span class="check-mark">✓</span></div>
+            <div class="check"><div><span>Availability</span><strong>Open capacity</strong></div><span class="check-mark">✓</span></div>
+          </div>
+          <div class="route-card"><div><small>Illustrative study</small><strong>MRI Knee • routine</strong></div><span class="route-button">Route to network</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="container">
+        <div class="section-head">
+          <div class="eyebrow">Built around real coverage problems</div>
+          <h2>Use your virtual group when the local model gets tight.</h2>
+        </div>
+        <div class="use-cases">
+          <article class="use-card"><div class="use-icon">↗</div><h3>Volume surges</h3><p>Add reading capacity during spikes without changing your permanent staffing model.</p></article>
+          <article class="use-card"><div class="use-icon">◎</div><h3>Subspecialty gaps</h3><p>Reach the expertise you need for specific studies without maintaining every specialty in-house.</p></article>
+          <article class="use-card"><div class="use-icon">◷</div><h3>Vacation &amp; leave</h3><p>Create backup coverage before one physician’s absence becomes an operational emergency.</p></article>
+          <article class="use-card"><div class="use-icon">＋</div><h3>New service lines</h3><p>Test new modalities or locations before committing to full-time radiologist recruitment.</p></article>
+        </div>
+      </div>
+    </section>
+
+    <section class="relationship">
+      <div class="container relationship-card">
+        <div class="relationship-copy">
+          <div class="eyebrow">Direct relationships still matter</div>
+          <h2>Know who’s reading your studies.</h2>
+          <p>A virtual group doesn’t have to feel anonymous. The model is intended to let centers develop preferred relationships with individual radiologists—while retaining access to a broader approved network when needed.</p>
+        </div>
+        <div class="relationship-photo">
+          <img src="https://images.pexels.com/photos/8376339/pexels-photo-8376339.jpeg?auto=compress&cs=tinysrgb&w=1600" alt="Physician taking part in a professional video meeting from a laptop" />
+          <div class="video-chip"><strong>Center + radiologist introduction</strong>Direct relationship • virtual meeting</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="not-model">
+      <div class="container">
+        <div class="section-head">
+          <div class="eyebrow">A deliberately different operating model</div>
+          <h2>Technology infrastructure—not another radiology group.</h2>
+          <p>The concept is intentionally designed around enabling professional relationships rather than replacing them.</p>
+        </div>
+        <div class="not-grid">
+          <article class="plain-card"><h3>The platform would help</h3><p>Maintain objective credential information, identify physicians who match center-defined requirements, facilitate workflow and communication, surface availability, support routing, and reduce repetitive administration.</p></article>
+          <article class="plain-card"><h3>The center stays in control</h3><p>The imaging center selects and approves radiologists, establishes professional relationships and fees, and retains responsibility for its credentialing and communication policies.</p></article>
+        </div>
+      </div>
+    </section>
+
+    <section class="feedback" id="feedback">
+      <div class="container">
+        <div class="section-head">
+          <div class="eyebrow">We’re testing the idea</div>
+          <h2>Would this be better than the way you get radiology coverage today?</h2>
+          <p>This concept is being developed with independent imaging centers in mind. We’d rather learn where the model is wrong before we build it.</p>
+        </div>
+        <div class="feedback-actions">
+          <button class="button light feedback-trigger">Share candid feedback</button>
+          <a class="button secondary" style="border-color:rgba(255,255,255,.22);background:transparent;color:white;" href="#model">Review the comparison</a>
+        </div>
+        <div class="micro">Concept-stage website • No patient information should be submitted through this page.</div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container footer-grid">
+      <p><strong style="color:#39545f">Radiology Exchange — confidential concept test.</strong> This page describes a proposed technology platform and is intended solely to gather market feedback. It is not currently offering medical services or representing that any particular regulatory, credentialing, billing, or technical workflow has been approved.</p>
+      <div class="footer-links">Prototype imagery: Pexels</div>
+    </div>
+  </footer>
+
+  <div class="modal" id="feedbackModal" role="dialog" aria-modal="true" aria-labelledby="feedbackTitle">
+    <div class="modal-card">
+      <div class="modal-top">
+        <div><h3 id="feedbackTitle">Help us pressure-test the idea.</h3><p>Three minutes of candid feedback is more useful than polite feedback.</p></div>
+        <button class="close" id="closeModal" aria-label="Close feedback form">×</button>
+      </div>
+      <form id="feedbackForm" class="form-grid">
+        <label>Your role
+          <select name="role" required>
+            <option value="">Select one</option>
+            <option>Imaging center owner / executive</option>
+            <option>Imaging center administrator</option>
+            <option>Radiologist</option>
+            <option>Operations / clinical leader</option>
+            <option>Other</option>
+          </select>
+        </label>
+        <label>Compared with a traditional teleradiology arrangement, how appealing is this model?
+          <select name="appeal" required>
+            <option value="">Select one</option>
+            <option>Much more appealing</option>
+            <option>Somewhat more appealing</option>
+            <option>About the same</option>
+            <option>Less appealing</option>
+            <option>Not sure</option>
+          </select>
+        </label>
+        <label>What is most compelling—or most concerning?
+          <textarea name="reaction" placeholder="The part I would value most is… / The thing that would stop me is…" required></textarea>
+        </label>
+        <label>What would you need the platform to handle before you would actually use it?
+          <textarea name="mustHave" placeholder="Credentialing, integrations, billing, critical results, contracting, scheduling, something else…"></textarea>
+        </label>
+        <label>Email (optional)
+          <input name="email" type="email" placeholder="you@imagingcenter.com" />
+        </label>
+        <div class="form-note">Prototype behavior: this form copies the response to the visitor’s clipboard. In <code>index.html</code>, you can optionally set a feedback email address or replace this with your preferred Formspree / Google Form / HubSpot endpoint before distributing the page.</div>
+        <button type="submit" class="button primary">Prepare feedback</button>
+      </form>
+    </div>
+  </div>
+  <div class="toast" id="toast">Feedback copied to clipboard.</div>
+
+  <script>
+    // OPTIONAL: Put your email address between the quotes to open an email draft after form submission.
+    // Example: const FEEDBACK_EMAIL = "you@yourdomain.com";
+    const FEEDBACK_EMAIL = "";
+
+    const modal = document.getElementById('feedbackModal');
+    const triggers = document.querySelectorAll('.feedback-trigger');
+    const closeModal = document.getElementById('closeModal');
+    const form = document.getElementById('feedbackForm');
+    const toast = document.getElementById('toast');
+
+    function openFeedback() {
+      modal.classList.add('open');
+      document.body.style.overflow = 'hidden';
+      setTimeout(() => modal.querySelector('select').focus(), 80);
+    }
+    function closeFeedback() {
+      modal.classList.remove('open');
+      document.body.style.overflow = '';
+    }
+    triggers.forEach(el => el.addEventListener('click', (e) => {
+      if (el.tagName === 'A') e.preventDefault();
+      openFeedback();
+    }));
+    closeModal.addEventListener('click', closeFeedback);
+    modal.addEventListener('click', e => { if (e.target === modal) closeFeedback(); });
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeFeedback(); });
+
+    function showToast(message) {
+      toast.textContent = message;
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 2800);
+    }
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const data = new FormData(form);
+      const response = [
+        'RADIOLOGY EXCHANGE CONCEPT FEEDBACK',
+        '',
+        'Role: ' + data.get('role'),
+        'Appeal vs traditional teleradiology: ' + data.get('appeal'),
+        '',
+        'Reaction / concern:',
+        data.get('reaction'),
+        '',
+        'Must-have capabilities:',
+        data.get('mustHave') || '(not provided)',
+        '',
+        'Email: ' + (data.get('email') || '(not provided)')
+      ].join('\n');
+
+      try {
+        await navigator.clipboard.writeText(response);
+        showToast('Feedback copied to clipboard.');
+      } catch (err) {
+        showToast('Feedback prepared.');
+      }
+
+      if (FEEDBACK_EMAIL) {
+        const subject = encodeURIComponent('Radiology Exchange concept feedback');
+        const body = encodeURIComponent(response);
+        window.location.href = `mailto:${FEEDBACK_EMAIL}?subject=${subject}&body=${body}`;
+      } else {
+        setTimeout(() => {
+          alert('Thanks. Your feedback has been copied to your clipboard. Before sharing this site broadly, add your email to FEEDBACK_EMAIL in index.html or connect the form to your preferred form service.');
+        }, 150);
+      }
+    });
+  </script>
+</body>
+</html>
